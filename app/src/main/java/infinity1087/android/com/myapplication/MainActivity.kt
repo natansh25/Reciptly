@@ -15,15 +15,16 @@ import com.google.firebase.ml.custom.*
 import com.otaliastudios.cameraview.CameraListener
 import kotlinx.android.synthetic.main.activity_main.*
 import com.google.firebase.ml.custom.model.FirebaseCloudModelSource
+import com.google.firebase.ml.custom.model.FirebaseLocalModelSource
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.io.ByteArrayInputStream
 import java.nio.ByteBuffer
+import java.nio.ByteOrder
 import javax.security.auth.Subject.doAs
 
 
-val recipts: Array<String> = arrayOf("target","walmart");
-
+val recipts: Array<String> = arrayOf("walmart","target");
 
 
 class MainActivity : AppCompatActivity() {
@@ -38,7 +39,12 @@ class MainActivity : AppCompatActivity() {
         private const val IMAGE_STD = 128.0f
     }
 
+    var isRefreshVisible = false
+
     private lateinit var currentBitmap: Bitmap
+    //-------------
+    //private val pokemonList = mutableListOf<Pokemon>()
+    //------------
     private val intValues = IntArray(DIM_IMG_SIZE_X * DIM_IMG_SIZE_Y)
     private var imgData: ByteBuffer =ByteBuffer.allocateDirect(
             4 * DIM_BATCH_SIZE * DIM_IMG_SIZE_X * DIM_IMG_SIZE_Y * DIM_PIXEL_SIZE)
@@ -51,20 +57,27 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         camera.setLifecycleOwner(this);
+        imgData.order(ByteOrder.nativeOrder())
+
 
         // Build a FirebaseCloudModelSource object by specifying the name you assigned the model
         // when you uploaded it in the Firebase console.
-        val cloudSource = FirebaseCloudModelSource.Builder("test1")
+        /*val cloudSource = FirebaseCloudModelSource.Builder("test1")
                 .enableModelUpdates(true)
-                //.setInitialDownloadConditions(conditions)
-                //.setUpdatesDownloadConditions(conditions)
                 .build()
-        FirebaseModelManager.getInstance().registerCloudModelSource(cloudSource)
+        FirebaseModelManager.getInstance().registerCloudModelSource(cloudSource)*/
+
+        //Load a local model using the FirebaseLocalModelSource Builder class
+        val fireBaseLocalModelSource = FirebaseLocalModelSource.Builder("test1")
+                .setAssetFilePath("optimized_graph.tflite")
+                .build()
+        FirebaseModelManager.getInstance().registerLocalModelSource(fireBaseLocalModelSource)
+
 
 
         val options = FirebaseModelOptions.Builder()
-                .setCloudModelName("test1")
-                //.setLocalModelName("my_local_model")
+                //.setCloudModelName("test1")
+                .setLocalModelName("test1")
                 .build()
          fireBaseInterpreter = FirebaseModelInterpreter.getInstance(options)!!
 
