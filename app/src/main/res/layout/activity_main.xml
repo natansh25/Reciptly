@@ -7,19 +7,18 @@
     tools:context=".MainActivity">
 
 
-    <Button
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/capture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
-        android:text="capture"
+        android:clickable="true"
+        app:backgroundTint="@color/design_default_color_primary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:src="@drawable/ic_camera_black_24dp" />
 
     <com.otaliastudios.cameraview.CameraView
         android:id="@+id/camera"
@@ -32,7 +31,7 @@
         app:cameraJpegQuality="60"
         app:cameraPlaySounds="false"
         app:cameraWhiteBalance="auto"
-        app:layout_constraintBottom_toTopOf="@+id/capture"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
