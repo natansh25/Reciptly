@@ -16,6 +16,7 @@ import com.otaliastudios.cameraview.CameraListener
 import kotlinx.android.synthetic.main.activity_main.*
 import com.google.firebase.ml.custom.model.FirebaseCloudModelSource
 import com.google.firebase.ml.custom.model.FirebaseLocalModelSource
+import org.jetbrains.anko.alert
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.io.ByteArrayInputStream
@@ -139,6 +140,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getPokemonFromBitmap(bitmap: Bitmap?) {
+        var recipt: ArrayList<String> = ArrayList();
+        recipt.clear()
+
         val inputs = FirebaseModelInputs.Builder()
                 .add(convertBitmapToByteBuffer(bitmap)) // add() as many input arrays as your model requires
                 .build()
@@ -156,6 +160,13 @@ class MainActivity : AppCompatActivity() {
                         if (fl > .20)
                             //pokeList.add(Pokemon(pokeArray[index], fl))
                             Log.d("resulto", recipts[index] + " = "+ fl)
+
+                        recipt.add(recipts[index] + " = "+ fl)
+                    }
+                    runOnUiThread {
+                        alert(recipt[0], "Labels").show()
+                        Log.d("resulto Alert", recipt[0])
+                        recipt.clear()
                     }
                    /* itemAdapter.setList(pokeList)
                     sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED*/
