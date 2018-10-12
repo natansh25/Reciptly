@@ -25,7 +25,7 @@ import java.nio.ByteOrder
 import javax.security.auth.Subject.doAs
 
 
-val recipts: Array<String> = arrayOf("target","walmart");
+val recipts: Array<String> = arrayOf("target", "walmart");
 
 
 class MainActivity : AppCompatActivity() {
@@ -43,11 +43,8 @@ class MainActivity : AppCompatActivity() {
     var isRefreshVisible = false
 
     private lateinit var currentBitmap: Bitmap
-    //-------------
-    //private val pokemonList = mutableListOf<Pokemon>()
-    //------------
     private val intValues = IntArray(DIM_IMG_SIZE_X * DIM_IMG_SIZE_Y)
-    private var imgData: ByteBuffer =ByteBuffer.allocateDirect(
+    private var imgData: ByteBuffer = ByteBuffer.allocateDirect(
             4 * DIM_BATCH_SIZE * DIM_IMG_SIZE_X * DIM_IMG_SIZE_Y * DIM_PIXEL_SIZE)
 
 
@@ -75,12 +72,11 @@ class MainActivity : AppCompatActivity() {
         FirebaseModelManager.getInstance().registerLocalModelSource(fireBaseLocalModelSource)
 
 
-
         val options = FirebaseModelOptions.Builder()
                 .setCloudModelName("infinity")
                 //.setLocalModelName("test1")
                 .build()
-         fireBaseInterpreter = FirebaseModelInterpreter.getInstance(options)!!
+        fireBaseInterpreter = FirebaseModelInterpreter.getInstance(options)!!
 
         //Specify the input and outputs of the model
         inputOutputOptions = FirebaseModelInputOutputOptions.Builder()
@@ -106,24 +102,19 @@ class MainActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.N)
     private fun convertByteArrayToBitmap(byteArray: ByteArray) {
 
-        //Handle this shit in bg
         doAsync {
             val exifInterface = ExifInterface(ByteArrayInputStream(byteArray))
             val orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1)
             val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
 
-            //to fix images coming out to be rotated
-            //https://github.com/google/cameraview/issues/22#issuecomment-269321811
+
             val m = Matrix()
             when (orientation) {
                 ExifInterface.ORIENTATION_ROTATE_90 -> m.postRotate(90F)
                 ExifInterface.ORIENTATION_ROTATE_180 -> m.postRotate(180F)
                 ExifInterface.ORIENTATION_ROTATE_270 -> m.postRotate(270F)
             }
-            //Create a new bitmap with fixed rotation
-            //Crop a part of image that's inside viewfinder and perform detection on that image
-            //https://stackoverflow.com/a/8180576/5471095
-            //TODO : Need to find a better way to do this than creating a new bitmap
+
             val cropX = (bitmap.width * 0.2).toInt()
             val cropY = (bitmap.height * 0.25).toInt()
 
@@ -140,42 +131,40 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getPokemonFromBitmap(bitmap: Bitmap?) {
-        var recipt: ArrayList<String> = ArrayList();
+        var recipt: ArrayList<Recipto> = ArrayList();
         recipt.clear()
 
         val inputs = FirebaseModelInputs.Builder()
-                .add(convertBitmapToByteBuffer(bitmap)) // add() as many input arrays as your model requires
+                .add(convertBitmapToByteBuffer(bitmap))
                 .build()
 
         fireBaseInterpreter.run(inputs, inputOutputOptions)
                 ?.addOnSuccessListener {
-                    //val pokeList = mutableListOf<Pokemon>()
-                    /**
-                     * Run a foreach loop through the output float array containing the probabilities
-                     * corresponding to each label
-                     * @see pokeArray to know what labels are supported
-                     */
-                    it.getOutput<Array<FloatArray>>(0)[0].forEachIndexed { index, fl ->
-                        //Only consider a pokemon when the accuracy is more than 20%
-                        if (fl > .20)
-                            //pokeList.add(Pokemon(pokeArray[index], fl))
-                            Log.d("resulto", recipts[index] + " = "+ fl)
 
-                        recipt.add(recipts[index] + " = "+ fl)
+                    it.getOutput<Array<FloatArray>>(0)[0].forEachIndexed { index, fl ->
+                        //Only consider when the accuracy is more than 20%
+                        if (fl > .20) {
+
+                            recipt.add(Recipto(recipts[index], fl))
+                            //pokeList.add(Pokemon(pokeArray[index], fl))
+                            Log.d("resulto", recipts[index] + " = " + fl)
+
+                        }
+
+                        //recipt.add(recipts[index] + " = "+ fl)
                     }
+                    var value:Recipto=recipt.get(0)
                     runOnUiThread {
-                        alert(recipt[0], "Labels").show()
-                        Log.d("resulto Alert", recipt[0])
+                        alert(value.vendor + " : " + value.accuracy, "Prediction").show()
+                        Log.d("resulto Alert", recipt.get(0).toString())
                         recipt.clear()
                     }
-                   /* itemAdapter.setList(pokeList)
-                    sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED*/
+
                 }
                 ?.addOnFailureListener {
                     it.printStackTrace()
-                    Toast.makeText(this,"Sorry, there was an error",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Sorry, there was an error", Toast.LENGTH_SHORT).show();
                 }
-
 
 
     }
