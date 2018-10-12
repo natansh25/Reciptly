@@ -155,7 +155,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     var value:Recipto=recipt.get(0)
                     runOnUiThread {
-                        alert(value.vendor + " : " + value.accuracy, "Prediction").show()
+                        alert(value.vendor + " : " + (value.accuracy * 100).toInt() +"%", "Prediction").show()
                         Log.d("resulto Alert", recipt.get(0).toString())
                         recipt.clear()
                     }
