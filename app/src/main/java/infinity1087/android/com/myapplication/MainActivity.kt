@@ -24,7 +24,7 @@ import java.nio.ByteOrder
 import javax.security.auth.Subject.doAs
 
 
-val recipts: Array<String> = arrayOf("walmart","target");
+val recipts: Array<String> = arrayOf("target","walmart");
 
 
 class MainActivity : AppCompatActivity() {
@@ -62,10 +62,10 @@ class MainActivity : AppCompatActivity() {
 
         // Build a FirebaseCloudModelSource object by specifying the name you assigned the model
         // when you uploaded it in the Firebase console.
-        /*val cloudSource = FirebaseCloudModelSource.Builder("test1")
+        val cloudSource = FirebaseCloudModelSource.Builder("infinity")
                 .enableModelUpdates(true)
                 .build()
-        FirebaseModelManager.getInstance().registerCloudModelSource(cloudSource)*/
+        FirebaseModelManager.getInstance().registerCloudModelSource(cloudSource)
 
         //Load a local model using the FirebaseLocalModelSource Builder class
         val fireBaseLocalModelSource = FirebaseLocalModelSource.Builder("test1")
@@ -76,8 +76,8 @@ class MainActivity : AppCompatActivity() {
 
 
         val options = FirebaseModelOptions.Builder()
-                //.setCloudModelName("test1")
-                .setLocalModelName("test1")
+                .setCloudModelName("infinity")
+                //.setLocalModelName("test1")
                 .build()
          fireBaseInterpreter = FirebaseModelInterpreter.getInstance(options)!!
 
