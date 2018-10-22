@@ -14,3 +14,11 @@ Android app that identifies and detects  vendor name, tax% and total $sum from a
 
 
 ![](reciptly.gif)
+
+
+#
+
+
+[Google Certified Associate Android Developer Digital Badge](https://www.credential.net/txa6s9vc)
+
+[Udacity Android Developer Nanodegree Certificate](https://confirm.udacity.com/JDMTWDA5)
