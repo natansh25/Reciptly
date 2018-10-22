@@ -9,3 +9,8 @@ Android app that identifies and detects  vendor name, tax% and total $sum from a
 
 - The tensorflowLite model is only trained using two recipts training dataset of **Walmart** and **Target** more comming soon..  
 
+
+# See it in Action
+
+
+![](reciptly.gif)
